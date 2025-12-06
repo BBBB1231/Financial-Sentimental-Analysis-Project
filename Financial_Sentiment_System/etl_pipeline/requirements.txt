@@ -1,0 +1,5 @@
+pymongo
+yfinance
+requests
+textblob
+python-dotenv

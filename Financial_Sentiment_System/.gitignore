@@ -1,0 +1,18 @@
+# Database Files (Too big)
+mongo_data/
+*.log
+
+# Python Cache (Junk)
+__pycache__/
+*.pyc
+
+# Mac System Files (Junk)
+.DS_Store
+
+# SECRETS (Do not upload!)
+.env
+
+.ipynb_checkpoints
+
+API Keys
+*.zip

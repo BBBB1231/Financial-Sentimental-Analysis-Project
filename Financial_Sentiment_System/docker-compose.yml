@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # 1. Database
+  mongodb:
+    image: mongo:latest
+    container_name: sentiment_mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # 2. ETL Service (Data Collector)
+  etl_service:
+    build: ./etl_pipeline
+    container_name: sentiment_etl
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    volumes:
+      - ./etl_pipeline:/app
+    command: python main.py
+
+  # 3. Dashboard Service (Website) - NEW!
+  dashboard_service:
+    build: ./dashboard
+    container_name: sentiment_dashboard
+    ports:
+      - "5001:5000"  # We can access this in browser
+    depends_on:
+      - mongodb
+    volumes:
+      - ./dashboard:/app
+
+volumes:
+  mongo_data:

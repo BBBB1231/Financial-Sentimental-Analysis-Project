@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AlphaSignal: Sentiment Divergence</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #eaeff2; padding: 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        
+        /* THE CONTAINER FOR ONE STOCK (Holds 2 Cards) */
+        .stock-row {
+            margin-bottom: 50px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .stock-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;
+        }
+        .stock-title { font-size: 32px; font-weight: 800; color: #2c3e50; }
+        .stock-price { font-size: 32px; font-weight: 300; color: #27ae60; }
+
+        .comparison-grid {
+            display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;
+        }
+
+        /* THE INDIVIDUAL CARD */
+        .source-card {
+            flex: 1; min-width: 300px;
+            border: 1px solid #eee; border-radius: 10px; overflow: hidden;
+        }
+
+        .card-header { padding: 15px; text-align: center; color: white; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        
+        /* Branding */
+        .nyt-header { background-color: #000; }     /* NYT Black */
+        .api-header { background-color: #2980b9; }  /* API Blue */
+
+        .sentiment-box {
+            text-align: center; padding: 20px; background: #fafafa; border-bottom: 1px solid #eee;
+        }
+        .big-score { font-size: 36px; font-weight: bold; }
+        .mood { font-size: 14px; font-weight: bold; padding: 4px 10px; border-radius: 4px; color: white; }
+
+        .news-list { padding: 0; list-style: none; margin: 0; }
+        .news-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; line-height: 1.4; }
+        .news-item a { text-decoration: none; color: #333; }
+        .news-item:hover { background: #f9f9f9; }
+        .mini-score { float: right; font-weight: bold; font-size: 11px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AlphaSignal: Source Divergence Analysis</h1>
+        <p>Comparing Institutional Sentiment (NYT) vs. Global Market Chatter (NewsAPI)</p>
+    </div>
+
+    {% for stock in data %}
+    <div class="stock-row">
+        
+        <div class="stock-header">
+            <div class="stock-title">{{ stock.ticker }}</div>
+            <div class="stock-price">${{ stock.price | round(2) }}</div>
+        </div>
+
+        <div class="comparison-grid">
+            
+            <div class="source-card">
+                <div class="card-header nyt-header">🏛️ Institutional (NYT)</div>
+                <div class="sentiment-box">
+                    <div class="big-score" style="color: {{ stock.nyt.color }}">
+                        {{ stock.nyt.score | round(2) }}
+                    </div>
+                    <span class="mood" style="background-color: {{ stock.nyt.color }}">
+                        {{ stock.nyt.prediction }}
+                    </span>
+                </div>
+                <div class="news-list">
+                    {% for article in stock.nyt.news %}
+                    <div class="news-item">
+                        <a href="{{ article.url }}" target="_blank">{{ article.title[:60] }}...</a>
+                        <span class="mini-score" style="color: {{ stock.nyt.color }}">{{ article.sentiment_score | round(2) }}</span>
+                    </div>
+                    {% else %}
+                    <div class="news-item" style="font-style:italic; color:#999">No NYT coverage.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="source-card">
+                <div class="card-header api-header">🌍 Global Chatter (NewsAPI)</div>
+                <div class="sentiment-box">
+                    <div class="big-score" style="color: {{ stock.api.color }}">
+                        {{ stock.api.score | round(2) }}
+                    </div>
+                    <span class="mood" style="background-color: {{ stock.api.color }}">
+                        {{ stock.api.prediction }}
+                    </span>
+                </div>
+                <div class="news-list">
+                    {% for article in stock.api.news %}
+                    <div class="news-item">
+                        <a href="{{ article.url }}" target="_blank">{{ article.title[:60] }}...</a>
+                        <span class="mini-score" style="color: {{ stock.api.color }}">{{ article.sentiment_score | round(2) }}</span>
+                    </div>
+                    {% else %}
+                    <div class="news-item" style="font-style:italic; color:#999">No global chatter found.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% else %}
+    <div style="text-align:center; margin-top:50px;">
+        <h2>System Initializing...</h2>
+        <p>Please wait for the data pipeline to complete its first cycle.</p>
+    </div>
+    {% endfor %}
+
+</body>
+</html>

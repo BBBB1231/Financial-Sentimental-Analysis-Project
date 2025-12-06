@@ -1,0 +1,7 @@
+.env
+mongo_data/
+__pycache__/
+.DS_Store
+.ipynb_checkpoints
+API Keys/
+*.zip
