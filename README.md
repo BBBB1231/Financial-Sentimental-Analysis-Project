@@ -77,10 +77,9 @@ The Dashboard launches.
 
 Open your web browser and navigate to: http://localhost:5000
 
-===================================================================
-===================================================================
-### Project Structure
 
+### Project Structure
+```plaintext
 ├── financial_sentiment_system/
 │   ├── etl_pipeline/        # Scraper & Sentiment Logic
 │   ├── dashboard/           # Flask App & Templates
@@ -88,3 +87,4 @@ Open your web browser and navigate to: http://localhost:5000
 ├── submission.ipynb         # Data Analysis Demo & Architecture
 ├── README.md                # Documentation
 └── .gitignore               # Security rules
+```
